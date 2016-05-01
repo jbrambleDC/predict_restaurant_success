@@ -52,13 +52,13 @@ Project Organization
 
 ### Data
 running `make all` will utilize the hive scripts in the `src/data` directory to build the databases in hive. There may be a few
-other Hive scripts you may want to run inside of `src/data`. @nhauke has prepared most of these hive scripts and the
+other Hive scripts you may want to run inside of `src/data`. [@nhauke](https://github.com/nhauke) has prepared most of these hive scripts and the
 corresponding Makefile
 
 ### Modeling
-@jbrambleDC has created two python scripts than can be ran in ipyspark, or pyspark to train SVMs and crossvalidate them. The
-resulying model performs quite poorly. After cutting down on feature selection and taking the mean success_metric by zipcode,
-@arifyali trained a regression model found in `src/models/regression.py` that performs much  better. 
+[@jbrambleDC](https://github.com/jbrambledc) has created two python scripts than can be ran in ipyspark, or pyspark to train SVMs and crossvalidate them. The
+resulting model performs quite poorly. After cutting down on feature selection and taking the mean success_metric by zipcode,
+[@arifyali](https://github.com/arifyali) trained a regression model found in `src/models/regression.py` that performs much  better. 
 
 ### Visualization
 All Visualization outputs can be found in `reports/figures/` These contain a scatter plot of all success_metrics at restaurants
