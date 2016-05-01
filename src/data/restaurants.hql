@@ -4,10 +4,8 @@ SET hive.groupby.orderby.position.alias=true;
 
 ADD JAR /home/hadoop/Yelp/json-serde-1.3.7-jar.jar;
 
-DROP TABLE IF EXISTS restaurants;
-CREATE EXTERNAL TABLE restaurants (
+CREATE EXTERNAL TABLE IF NOT EXISTS restaurants (
   business_id string,
-  full_address string,
   zipcode string,
   hours struct<Monday:struct<open:string,
                              close:string>,
@@ -24,11 +22,11 @@ CREATE EXTERNAL TABLE restaurants (
                Sunday:struct<open:string,
                              close:string>>,
   open boolean,
-  city string,
   review_count int,
   name string,
-  state string,
   stars string,
+  latitude string,
+  longitude string,
   attributes struct<Takeout:boolean,
                     DriveThru:boolean,
                     GoodFor:struct<dessert:boolean,
@@ -38,7 +36,6 @@ CREATE EXTERNAL TABLE restaurants (
                                    brunch:boolean,
                                    breakfast:boolean>,
                     Caters:boolean,
-                    NoiseLevel:string,
                     TakesReservation:boolean,
                     Delivery:boolean,
                     Ambience:struct<romantic:boolean,
@@ -55,10 +52,8 @@ CREATE EXTERNAL TABLE restaurants (
                                    validated:boolean,
                                    lot:boolean,
                                   valet:boolean>,
-                    HasTV:boolean,
+		    HasTV:boolean,
                     OutdoorSeating:boolean,
-                    Attire:string,
-                    Alcohol:string,
                     WaiterService:boolean,
                     AcceptsCreditCards:boolean,
                     GoodForKids:boolean,
@@ -69,7 +64,32 @@ ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
 STORED AS TEXTFILE
 LOCATION 's3://gu-anly502-yelp/restaurant_table/';
 
---Arif's edits
---select * from restaurants limit 0;
-SELECT if(open, stars*review_count,0) AS success, business_id FROM restaurants;
---omitted: latitude, longitude, categories, neighborhoods
+CREATE TABLE IF NOT EXISTS trunc_rest AS
+SELECT business_id,
+       zipcode,
+       open,
+       review_count,
+       name,
+       stars,
+       latutude,
+       longitude,
+       attributes.PriceRange,
+       if(attributes.GoodForKids,1,0) as GoodForKids,
+       if(attributes.GoodForGroups,1,0) as GoodForGroup,
+       if(attributes.GoodFor.dessert,1,0) as GoodForDessert,
+       if(attributes.GoodFor.latenight,1,0) as GoodForLateNight,
+       if(attributes.GoodFor.lunch,1,0) as GoodForLunch,
+       if(attributes.GoodFor.dinner,1,0) as GoodForDinner,
+       if(attributes.GoodFor.brunch,1,0) as GoodForBrunch,
+       if(attributes.GoodFor.breakfast,1,0) as GoodForBreakfast,
+       if(attributes.Ambience.romantic,1,0) as Romantic,
+       if(attributes.Ambience.intimate,1,0) as Intimate,
+       if(attributes.Ambience.classy,1,0) as Classy,
+       if(attributes.Ambience.hipster,1,0) as Hipster,
+       if(attributes.Ambience.divey,1,0) as Divey,
+       if(attributes.Ambience.touristy,1,0) as Touristy,
+       if(attributes.Ambience.trendy,1,0) as Trendy,
+       if(attributes.Ambience.upscale,1,0) as Upscale,
+       if(attributes.Ambience.casual,1,0) as Casual
+FROM restaurants;
+
