@@ -1,6 +1,6 @@
 all: restaurants reviews census_data merged zipcodes
 
-restaurants: src/data/trunc_restaurants.hql
+restaurants: src/data/restaurants.hql
 	beeline -u jdbc:hive2://localhost:10000 -n hadoop -p hadoop -f $<
 
 reviews: src/data/reviews.hql
