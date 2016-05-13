@@ -9,7 +9,10 @@ from pyspark.mllib.evaluation import RegressionMetrics
 sc = SparkContext()
 sqlContext = HiveContext(sc)
 # The races from the census data were normalized in order
-qry = "SELECT AVG(success_metric) as success_metric, hispanic/population as hispanic_percentage, zipcode from census_rest_success group by 1, 2"
+qry = """SELECT AVG(success_metric) as success_metric,
+         hispanic/population as hispanic_percentage, zipcode
+         from census_rest_success where array_contains(categories, 'Mexican')
+         group by hispanic, population, zipcode"""
 
 df = sqlContext.sql(qry)
 #CITATION:
@@ -23,7 +26,7 @@ df.agg(*exprs).show()
 df = df.dropna()
 
 
-features = df.select(df['success_metric'], df['hispanic_percentage'])`
+features = df.select(df['success_metric'], df['hispanic_percentage'])
 
 training, test = features.randomSplit([0.7, 0.3], seed=11L)
 
