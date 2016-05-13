@@ -2,7 +2,7 @@ SET mapred.input.di.recursive=true;
 SET hive.mapred.supports.subdirectories=true;
 SET hive.groupby.orderby.position.alias=true;
 
-ADD JAR /home/hadoop/Yelp/json-serde-1.3.7-jar.jar;
+ADD JAR /home/hadoop/predict_restaurant_success/src/data/json-serde-1.3.7-jar.jar;
 
 CREATE EXTERNAL TABLE IF NOT EXISTS restaurants (
   business_id string,
@@ -22,6 +22,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS restaurants (
                Sunday:struct<open:string,
                              close:string>>,
   open boolean,
+  categories array<string>,
   review_count int,
   name string,
   stars string,
@@ -68,10 +69,11 @@ CREATE TABLE IF NOT EXISTS trunc_rest AS
 SELECT business_id,
        zipcode,
        open,
+       categories,
        review_count,
        name,
        stars,
-       latutude,
+       latitude,
        longitude,
        attributes.PriceRange,
        if(attributes.GoodForKids,1,0) as GoodForKids,

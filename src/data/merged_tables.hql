@@ -2,7 +2,7 @@ SET mapred.input.di.recursive=true;
 SET hive.mapred.supports.subdirectories=true;
 SET hive.groupby.orderby.position.alias=true;
 
-ADD JAR /home/hadoop/Yelp/json-serde-1.3.7-jar.jar;
+ADD JAR /home/hadoop/predict_restaurant_success/src/data/json-serde-1.3.7-jar.jar;
 
 CREATE TABLE IF NOT EXISTS rest_rev_merge AS
 SELECT tr.*, ra.days_open
